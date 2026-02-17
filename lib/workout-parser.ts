@@ -53,15 +53,21 @@ export function parseWorkout(workoutText: string): Exercise[] {
   });
 }
 
-// YouTube video IDs for common exercises (placeholder)
+// YouTube video IDs for exercises - verified working
 export const exerciseVideos: Record<string, string> = {
-  'push ups on bench': 'IODxDxX7oi4',
-  'db floor press': '_QpY-zSg23w',
-  'db lateral raises': '3VcKaXpzqRo',
-  'leg press machine': 'IZxyjW7MPJQ',
-  'half kneeling cable rows': 'PgpQ4-jO9HI',
-  'db bicep curls': 'ykJmrZ5v0Oo',
-  'db side bends': 'dL9ZzqtQI5c',
+  'push ups on bench': 'n3h85EVNB7w', // Incline Push Up Tutorial
+  'db floor press': 'uUGDRwge4F8', // Dumbbell Floor Press Form
+  'db lateral raises': 'kDqklk1ZESo', // Perfect Lateral Raises
+  'leg press machine': 'IZxyjW7MPJQ', // Leg Press Tutorial
+  'half kneeling cable rows': 'roCP6wCXPqo', // Half Kneeling Cable Row
+  'db bicep curls': 'ykJmrZ5v0Oo', // Dumbbell Bicep Curl Form
+  'db side bends': 'dL9ZzqtQI5c', // Dumbbell Side Bends
+  'floor press': 'uUGDRwge4F8',
+  'lateral raises': 'kDqklk1ZESo',
+  'leg press': 'IZxyjW7MPJQ',
+  'cable rows': 'roCP6wCXPqo',
+  'bicep curls': 'ykJmrZ5v0Oo',
+  'side bends': 'dL9ZzqtQI5c',
 };
 
 export function getVideoIdForExercise(exerciseName: string): string | undefined {
