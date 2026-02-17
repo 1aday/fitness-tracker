@@ -15,8 +15,7 @@ DB Side Bends (minimize movement at the HIP) 3X8 each side`;
 export default function Home() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [currentSession, setCurrentSession] = useState<WorkoutSession | null>(null);
-  const [workoutInput, setWorkoutInput] = useState(DEFAULT_WORKOUT);
-  const [showHistory, setShowHistory] = useState(false);
+  const [weights, setWeights] = useState<Record<string, number>>({});
 
   useEffect(() => {
     // Load or create today's workout session
@@ -29,7 +28,7 @@ export default function Home() {
       setExercises(todaySession.exercises);
     } else {
       // Parse default workout
-      const parsed = parseWorkout(workoutInput);
+      const parsed = parseWorkout(DEFAULT_WORKOUT);
       const newSession: WorkoutSession = {
         id: `workout-${Date.now()}`,
         date: today,
@@ -72,6 +71,18 @@ export default function Home() {
 
   const getSetStatus = (exerciseId: string, setNumber: number): CompletedSet | undefined => {
     return currentSession?.completedSets[exerciseId]?.find(s => s.setNumber === setNumber);
+  };
+
+  const updateWeight = (exerciseId: string, setNum: number, weight: number) => {
+    setWeights(prev => ({ ...prev, [`${exerciseId}-${setNum}`]: weight }));
+  };
+
+  const getWeight = (exerciseId: string, setNum: number): number => {
+    const key = `${exerciseId}-${setNum}`;
+    if (weights[key] !== undefined) return weights[key];
+    
+    const setStatus = getSetStatus(exerciseId, setNum);
+    return setStatus?.weight || 0;
   };
 
   if (!currentSession) {
@@ -134,7 +145,7 @@ export default function Home() {
               <div className="space-y-3">
                 {Array.from({ length: exercise.sets }, (_, i) => i + 1).map((setNum) => {
                   const setStatus = getSetStatus(exercise.id, setNum);
-                  const [weight, setWeight] = useState(setStatus?.weight || 0);
+                  const currentWeight = getWeight(exercise.id, setNum);
 
                   return (
                     <div key={setNum} className="flex items-center gap-3">
@@ -144,8 +155,8 @@ export default function Home() {
                       
                       <input
                         type="number"
-                        value={weight}
-                        onChange={(e) => setWeight(parseInt(e.target.value, 10) || 0)}
+                        value={currentWeight}
+                        onChange={(e) => updateWeight(exercise.id, setNum, parseInt(e.target.value, 10) || 0)}
                         placeholder="Weight"
                         className="w-24 rounded border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         disabled={setStatus?.completed}
@@ -154,7 +165,7 @@ export default function Home() {
                       <span className="text-sm text-slate-600">lbs</span>
                       
                       <button
-                        onClick={() => markSetComplete(exercise.id, setNum, weight)}
+                        onClick={() => markSetComplete(exercise.id, setNum, currentWeight)}
                         disabled={setStatus?.completed}
                         className={`ml-auto rounded px-4 py-2 text-sm font-medium transition-colors ${
                           setStatus?.completed
